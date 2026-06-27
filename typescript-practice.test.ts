@@ -46,6 +46,20 @@ function mergeObjects<A, B>(a: A, b: B): A & B {
   return { ...a, ...b };
 }
 
+function groupUsersByStatus(users: Person[]): Record<UserStatus, Person[]> {
+  return {
+    [UserStatus.Active]: users.filter(
+      (user) => user.status === UserStatus.Active,
+    ),
+    [UserStatus.Inactive]: users.filter(
+      (user) => user.status === UserStatus.Inactive,
+    ),
+    [UserStatus.Pending]: users.filter(
+      (user) => user.status === UserStatus.Pending,
+    ),
+  };
+}
+
 function isPerson(value: unknown): value is Person {
   return (
     typeof value === "object" &&
@@ -108,6 +122,23 @@ function runTests() {
   console.assert(
     merged.a === 1 && merged.b === "test",
     "mergeObjects should combine object fields",
+  );
+
+  const grouped = groupUsersByStatus(users);
+  console.assert(
+    grouped[UserStatus.Active].length === 1 &&
+      grouped[UserStatus.Active][0].name === "Alice",
+    "groupUsersByStatus should group active users",
+  );
+  console.assert(
+    grouped[UserStatus.Pending].length === 1 &&
+      grouped[UserStatus.Pending][0].name === "Bob",
+    "groupUsersByStatus should group pending users",
+  );
+  console.assert(
+    grouped[UserStatus.Inactive].length === 1 &&
+      grouped[UserStatus.Inactive][0].name === "Carol",
+    "groupUsersByStatus should group inactive users",
   );
 
   const maybePerson: unknown = {
