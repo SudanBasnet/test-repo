@@ -151,6 +151,12 @@ function runTests() {
     "isPerson should detect a valid Person object",
   );
 
+  const notPerson: unknown = { id: "x", name: "X", status: UserStatus.Active };
+  console.assert(
+    !isPerson(notPerson),
+    "isPerson should return false for invalid id type",
+  );
+
   console.log("All TypeScript practice tests passed.");
 }
 
